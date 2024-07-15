@@ -33,14 +33,14 @@ Sometimes, some subdomain is not routed through the CDN and might expose the rea
 
 By examining the DNS records of a domain, an attacker could potentially discover previously exposed IP addresses of the server from times when it was not behind a CDN.
 
-In the case of WordPress, there is a technique called `pingback` that sometimes allows an attacker to retrieve the real IP address of the server. For a detailed explanation, you can refer to this [excellent article](https://blog.nem.ec/2020/01/22/discover-cloudflare-wordpress-ip/).
+Even such things as `Host` header fuzzing using various subdomains and loopback IPs can occasionally bypass a CDN, enabling direct HTTP requests.
 
-Even `Host` header fuzzing using various subdomains and loopback IPs can occasionally bypass a CDN, enabling direct HTTP requests.
+In the case of WordPress, there is an interesting technique called `pingback` that sometimes allows an attacker to retrieve the real IP address of the server. For a detailed explanation, you can refer to this [excellent article](https://blog.nem.ec/2020/01/22/discover-cloudflare-wordpress-ip/).
+
+In red team engagements, threat actors use diverse social engineering techniques to uncover real IP addresses. Methods such as phishing, pretexting, and even physical reconnaissance (like dumpster diving) can potentially yield valuable information.
 
 # Useful tools
 
-One of the most useful and most common tools out there is Censys and Shodan. This tools scan almost everything about the domain, including HTTP headers, SSL-certificates, services running on ports, metadata analysys and many other things.
+Two of the most effective and widely-used tools are Censys and Shodan. These tools comprehensively scan domains, gathering data on HTTP headers, SSL certificates, services operating on ports, metadata analysis, and more.
 
 When examining DNS records, there are various tools available that can assist, such as SecurityTrails, DNSDumpster, and even VirusTotal.
-
-In the red team engagements threat actors can pull out the real IP with various social engineering techniques, such as fishing, pretexting and even dumpster diving.
