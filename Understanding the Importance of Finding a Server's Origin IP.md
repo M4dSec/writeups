@@ -60,7 +60,7 @@ Even such things as `Host` header fuzzing using various subdomains and loopback 
 In the case of WordPress, there is an interesting technique called `pingback` that sometimes allows an attacker to retrieve the real IP address of the server. For a detailed explanation, you can refer to this [excellent article](https://blog.nem.ec/2020/01/22/discover-cloudflare-wordpress-ip/).
 
 ## Social Engineering
-Threat actors could  use diverse social engineering techniques to uncover real IP addresses. Methods such as phishing, pretexting, and even physical reconnaissance (like dumpster diving) can potentially yield valuable information.
+Threat actors could  use diverse social engineering techniques to uncover real IP addresses. Methods such as phishing, pretexting, and even physical reconnaissance (like dumpster diving) can potentially yield that missing piece of valuable information such as IP adress.
 
 # Useful tools
 Two of the most effective and widely-used tools for IP discovering are Censys and Shodan. These tools comprehensively scan domains, gathering data on HTTP headers, SSL certificates, services operating on ports, metadata analysis, and more.
