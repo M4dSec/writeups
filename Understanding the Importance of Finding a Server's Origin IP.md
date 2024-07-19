@@ -27,9 +27,9 @@ Understanding the server's origin IP is crucial for accurately assessing vulnera
 
 # ""Techniques and Methods""
 
-Let's try out some of the most popular techniques out there to retrieve real IP adress of some Enji.AI.
+Let's explore some popular techniques to retrieve the real IP address of Enji.AI.
 
-First off, we can use `host` and `whois` utilities to find out more information about the domain that we are testing:
+First, we can use the `host` and `whois` utilities to gather more information about the domain in question:
 ```
 @deadsec ➜ ~  host enji.ai
 enji.ai has address 172.66.XX.XX
@@ -44,26 +44,24 @@ NetName:        CLOUDFLARENET
 OrgName:        Cloudflare, Inc.
 ...
 ```
-From the lines above, we can see that this IP adress is possesed by the CloudFlare, which means that CDN is present, and all our requests are being routed throught that CDN.
+From the information above, we can see that this IP address is owned by Cloudflare. This indicates that all our requests are routed through the CDN.
 
-Now, there are many methods that we can potentially retirieve real IP adress of that server.
-
-The most effective that can an attacker do is looking for misconfigurations.
+There are various methods available to potentially retrieve the real IP address of the server. The most effective one is looking for misconfigurations;
 The application may inadvertently leak its server IP through various channels: exposed services on specific ports, custom HTTP headers, outdated DNS records, and numerous other avenues.
 
 ## SSL-ceritifcates
 SSL certificates provide another valuable avenue for discovering a server's origin IP address. When a server hosts an SSL certificate, various details about the certificate, including its public key, can be used to trace back to the original server, even when the server is behind a CDN. Tools like Censys and CRT.sh can help a lot with certificate analysys.
 
-We will use Censys for the purpose of checking the certificate.
-At the `https://search.censys.io/` we present with nice and consise window:
+We will use Censys to verify the certificate associated with a domain.
+At `https://search.censys.io/` we are presented with a clean and concise interface:
 *censys window*
 
-After typing in our domain, we got a lot of response:
+After entering our domain, we receive numerous responses:
 *search-in-censys*
 
-Let's examine the first IP adress that we got:
+Let's examine the first IP address in the results:
 *val-info*
-We can see a lot of valuable information, and in the `Forward DNS` and `Names` lines we see the domains and names retrespectivly. This gives us an idea about who owns this IP address, and as we can see, that this is indeed IP of our target:
+This provides us with a wealth of valuable information. In the `Forward DNS` and `Names` sections, we see the associated domains and names, respectively. This helps us identify the owner of the IP address. As we can see, this IP address belongs to our target:
 ```
 Forward DNS: elm-frontend.enji.ai, dev.enji.ai, airflow.enji.ai ...
 ```
@@ -72,11 +70,10 @@ Forward DNS: elm-frontend.enji.ai, dev.enji.ai, airflow.enji.ai ...
 Names: *.comedian.maddevs.co, *.dev.enji.ai, *.enji.ai, *.staging.enji.ai, comedian.maddevs.co, enji.ai
 ```
 
-Upon entering the `http://52.19.60.183/`, we see the interesting message, that suggests that we found the real IP:
+By accessing `http://52.19.60.183/`, we observe an interesting message that suggests we have found the correct IP address:
 *found-adress*
 
-This is one of the easiest and efficient methods of finding the real IP adress.
-
+This method is one of the simplest and most efficient ways to identify the real IP address of a target.
 
 ## Subdomains
 Sometimes, some subdomain is not routed through the CDN and might expose the real IP address. This often includes mail servers, FTP servers, and other similar services.
@@ -125,6 +122,8 @@ Threat actors could  use diverse social engineering techniques to uncover real I
 
 # Useful tools
 Two of the most effective and widely-used tools for IP discovering are Censys and Shodan. These tools comprehensively scan domains, gathering data on HTTP headers, SSL certificates, services operating on ports, metadata analysis, and more.
+
+There are many great CLI utilities that could help in finding the real ip: `host`, `whois`, `dig`, `nslookup`, `curl` and many others. 
 
 When examining DNS records, there are various tools available that can assist, such as SecurityTrails, DNSDumpster, and even VirusTotal.
 
