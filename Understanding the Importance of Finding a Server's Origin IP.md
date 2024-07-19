@@ -25,16 +25,63 @@ Understanding the server's origin IP is crucial for accurately assessing vulnera
 - Precisely map the network infrastructure and identify services operating on various IP addresses.
 - Make direct HTTP requests that bypass CDN filtering mechanisms, potentially exposing multiple attack vectors.
 
-# Techniques and Methods
+# ""Techniques and Methods""
+
+Let's try out some of the most popular techniques out there to retrieve real IP adress of some Enji.AI.
+
+First off, we can use `host` and `whois` utilities to find out more information about the domain that we are testing:
+```
+@deadsec ➜ ~  host enji.ai
+enji.ai has address 172.66.XX.XX
+enji.ai has address 162.159.XX.XX
+```
+
+```
+@deadsec ➜ ~  whois 172.66.XX.XX
+...
+NetRange:       172.64.0.0 - 172.71.255.255
+NetName:        CLOUDFLARENET
+OrgName:        Cloudflare, Inc.
+...
+```
+From the lines above, we can see that this IP adress is possesed by the CloudFlare, which means that CDN is present, and all our requests are being routed throught that CDN.
+
+Now, there are many methods that we can potentially retirieve real IP adress of that server.
 
 The most effective that can an attacker do is looking for misconfigurations.
 The application may inadvertently leak its server IP through various channels: exposed services on specific ports, custom HTTP headers, outdated DNS records, and numerous other avenues.
 
+## SSL-ceritifcates
+SSL certificates provide another valuable avenue for discovering a server's origin IP address. When a server hosts an SSL certificate, various details about the certificate, including its public key, can be used to trace back to the original server, even when the server is behind a CDN. Tools like Censys and CRT.sh can help a lot with certificate analysys.
+
+We will use Censys for the purpose of checking the certificate.
+At the `https://search.censys.io/` we present with nice and consise window:
+*censys window*
+
+After typing in our domain, we got a lot of response:
+*search-in-censys*
+
+Let's examine the first IP adress that we got:
+*val-info*
+We can see a lot of valuable information, and in the `Forward DNS` and `Names` lines we see the domains and names retrespectivly. This gives us an idea about who owns this IP address, and as we can see, that this is indeed IP of our target:
+```
+Forward DNS: elm-frontend.enji.ai, dev.enji.ai, airflow.enji.ai ...
+```
+
+```
+Names: *.comedian.maddevs.co, *.dev.enji.ai, *.enji.ai, *.staging.enji.ai, comedian.maddevs.co, enji.ai
+```
+
+Upon entering the `http://52.19.60.183/`, we see the interesting message, that suggests that we found the real IP:
+*found-adress*
+
+This is one of the easiest and efficient methods of finding the real IP adress.
+
+
 ## Subdomains
 Sometimes, some subdomain is not routed through the CDN and might expose the real IP address. This often includes mail servers, FTP servers, and other similar services.
 
-## SSL-ceritifcates
-SSL certificates provide another valuable avenue for discovering a server's origin IP address. When a server hosts an SSL certificate, various details about the certificate, including its public key, can be used to trace back to the original server, even when the server is behind a CDN. Tools like Censys and CRT.sh can help a lot with certificate analysys.
+
 
 
 ## DNS Records Analysis
