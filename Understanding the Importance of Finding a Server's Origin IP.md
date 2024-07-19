@@ -81,9 +81,6 @@ This is one of the easiest and efficient methods of finding the real IP adress.
 ## Subdomains
 Sometimes, some subdomain is not routed through the CDN and might expose the real IP address. This often includes mail servers, FTP servers, and other similar services.
 
-
-
-
 ## DNS Records Analysis
 By examining the DNS records of a domain, an attacker could potentially discover previously exposed IP addresses of the server from times when it was not behind a CDN. DNS records provide various types of information about a domain, and by analyzing these records, penetration testers can gather valuable insights that may lead to the discovery of the origin IP.
 
@@ -99,6 +96,23 @@ Different types of DNS records can reveal specific details about the domain and 
 - **TXT Records:** Text records can contain various forms of information, including verification details for email services and other metadata. Occasionally, these records might inadvertently expose internal IP addresses or other sensitive information.
 
 - **CNAME Records:** Canonical Name records alias one domain to another. By following the chain of CNAME records, it’s possible to uncover the origin domain that might point directly to the real server IP.
+
+We can use `dig` to find the real IP through DNS records like this:
+`dig` on the `enji.ai` outputs this:
+```
+...
+enji.ai.                0       IN      A       162.159.140.98
+enji.ai.                0       IN      A       172.66.0.96
+...
+```
+
+But, `dig` to `dev.enji.ai` or `auth.enji.ai` resolves to
+```
+...
+a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.19.60.183
+a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.30.79.226
+...
+```
 
 ## Host Header Fuzzing
 Even such things as `Host` header fuzzing using various subdomains and loopback IPs can occasionally bypass a CDN, enabling direct HTTP requests.
