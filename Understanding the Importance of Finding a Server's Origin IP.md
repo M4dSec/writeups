@@ -77,7 +77,7 @@ Names: *.comedian.maddevs.co, *.dev.enji.ai, *.enji.ai, *.staging.enji.ai, comed
 By accessing `http://52.19.60.183/`, we observe an interesting message that suggests we have found the correct IP address:
 ![](./assets/found-adress.png)
 
-This method is one of the simplest and most efficient ways to identify the real IP address of a target.
+This method is one of the simplest and most efficient ways to identify the real IP address of a target. Keep in mind that the different IP addresses identified during our investigation are not necessarily the host IPs for `enji.ai`, but they provide valuable clues about the present subnet and expanding our attack surface.
 
 ## Subdomains
 
@@ -107,7 +107,7 @@ $ host docs.enji.ai
 docs.enji.ai has address 52.30.219.62
 ```
 
-From the output above, we can see that `docs.enji.ai` is not routed through a CDN, which reveals the real IP address. Keep in mind that the different IP addresses identified during our investigation are not necessarily the host IPs for `enji.ai`, but they provide valuable clues about the present subnet and expanding our attack surface.
+From the output above, we can see that `docs.enji.ai` is not routed through a CDN, which reveals the real IP address.
 
 ## DNS Records Analysis
 
@@ -127,8 +127,7 @@ Different types of DNS records can reveal specific details about the domain and 
 
 - **CNAME Records:** Canonical Name records alias one domain to another. By following the chain of CNAME records, it’s possible to uncover the origin domain that might point directly to the real server IP.
 
-We can use `dig` to find the real IP through DNS records like this:
-`dig` on the `enji.ai` outputs this:
+We can use the `dig` command to find the real IP address through DNS records. By querying the DNS records of a domain, `dig` provides detailed information about the IP addresses associated with the domain. Running `dig` on `enji.ai` outputs the following:
 
 ```
 ...
@@ -137,7 +136,8 @@ enji.ai.                0       IN      A       172.66.0.96
 ...
 ```
 
-But, `dig` to `dev.enji.ai` or `auth.enji.ai` resolves to
+This output shows that the `enji.ai` resolves to two IP addresses, `162.159.140.98` and `172.66.0.96`, both of which are associated with Cloudflare.
+However, when we run `dig` on subdomains like `dev.enji.ai` or `auth.enji.ai`, the results are different:
 
 ```
 ...
@@ -145,6 +145,8 @@ a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.19.60.183
 a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.30.79.226
 ...
 ```
+
+We can see that the subdomains `dev.enji.ai` and `auth.enji.ai` resolve to the CNAME record `a33...075.eu-west-1.elb.amazonaws.com`, which in turn resolves to the IP addresses `52.19.60.183` and `52.30.79.226`. By identifying such records, we can often bypass the CDN and uncover the real IP addresses of the servers hosting these subdomains.
 
 ## Additional Methods
 
@@ -167,7 +169,11 @@ There are numerous command-line interface (CLI) utilities that can be invaluable
 
 These utilities, when used together, can paint a comprehensive picture of the target's network setup.
 
-When examining DNS records, there are various tools available that can assist, such as SecurityTrails, DNSDumpster, and even VirusTotal.
+When examining DNS records, there are various tools available that can assist:
+
+- **SecurityTrails** offers a comprehensive platform for accessing historical DNS data, domain and IP lookups, and extensive API capabilities, allowing for detailed and in-depth analysis.
+- **DNSDumpster** is a valuable resource for DNS reconnaissance, enabling users to identify all subdomains and associated IP addresses of a target domain. It provides a clear picture of the domain's DNS configuration and potential vulnerabilities.
+- **VirusTotal**, while primarily known for its malware analysis capabilities, also includes features for examining DNS records and related domain information. By submitting a domain to VirusTotal, users can gain insights into its DNS history, associated IP addresses, and any potential security threats linked to the domain.
 
 # Ethical and Legal Considerations
 
