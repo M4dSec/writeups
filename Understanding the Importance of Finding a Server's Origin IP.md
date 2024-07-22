@@ -1,4 +1,4 @@
-# Writeup: Understanding the Importance of Finding a Server's Origin IP
+# Writeup: Finding a Server's Origin IP
 
 # Summary
 
@@ -27,7 +27,7 @@ Understanding the server's origin IP is crucial for accurately assessing vulnera
 
 # Techniques and Methods
 
-Let's explore some popular techniques to retrieve the real IP address of Enji.AI.
+Let's explore some popular techniques to retrieve the real IP address of `enji.ai` domain. There are various methods available to potentially retrieve the real IP address. The application may inadvertently leak its server IP through various channels: exposed services on specific ports, custom HTTP headers, outdated DNS records, and numerous other avenues.
 
 First, we can use the `host` and `whois` utilities to gather more information about the domain in question:
 
@@ -47,9 +47,6 @@ OrgName:        Cloudflare, Inc.
 ```
 
 From the information above, we can see that this IP address is owned by Cloudflare. This indicates that all our requests are routed through the CDN.
-
-There are various methods available to potentially retrieve the real IP address of the server. The most effective one is looking for misconfigurations;
-The application may inadvertently leak its server IP through various channels: exposed services on specific ports, custom HTTP headers, outdated DNS records, and numerous other avenues.
 
 ## SSL-ceritifcates
 
@@ -158,6 +155,49 @@ Here are some additional techniques that can assist in uncovering the real IP ad
 
 # Useful tools
 
+## CloudFlair
+
+We can use [CloudFlair](https://github.com/christophetd/CloudFlair) to find the origin IP of the `enji.ai` domain. This tool is very useful and it also uses Censys API to query different certificates, related to a specific domain. We can start it by running the following command:
+
+```
+$ python cloudflair.py enji.ai
+[*] Retrieving Cloudflare IP ranges from https://www.cloudflare.com/ips-v4
+[*] The target appears to be behind CloudFlare.
+[*] Looking for certificates matching "enji.ai" using Censys
+[*] 72 certificates matching "enji.ai" found.
+[*] Splitting the list of certificates into chunks of 25.
+[*] Looking for IPv4 hosts presenting these certificates...
+[*] 3 IPv4 hosts presenting a certificate issued to "enji.ai" were found.
+  - 34.252.154.19
+  - 34.247.206.200
+  - 63.32.27.129
+[*] Testing candidate origin servers
+[*] Retrieving target homepage at https://enji.ai
+[*] "https://enji.ai" redirected to "https://enji.ai/"
+  - 34.252.154.19
+      responded with an unexpected HTTP status code 404
+  - 34.247.206.200
+  - 63.32.27.129
+[-] Did not find any origin server.
+```
+
+We can send a `GET` request to one of the found IP's and get this:
+
+```
+$ curl -v https://34.247.206.200 -k
+...
+<p>
+    We are performing quick maintenance at the moment and will be baonline soon.
+    Try to refresh the page or come back in a few minutes.
+</p>
+<p>&mdash; The Enji.ai Team</p>
+...
+```
+
+Looking at the output, the tool stated that it didn't found an origin IP, but we found many other IP's that could be useful in our engagement.
+
+## Other tools
+
 Two of the most effective and widely-used tools for discovering IP addresses are Censys and Shodan. These powerful platforms comprehensively scan domains, gathering a wide array of data including HTTP headers, SSL certificates, services operating on various ports, and metadata analysis. By leveraging the extensive databases and sophisticated search capabilities of Censys and Shodan, we can uncover critical information about a target's infrastructure, identify potential vulnerabilities, and gain insights into the configuration and exposure of network services.
 
 There are numerous command-line interface (CLI) utilities that can be invaluable for discovering the real IP address of a server:
@@ -182,3 +222,8 @@ It's essential to understand the ethical and legal implications of these techniq
 # Conclusion
 
 Identifying a server's origin IP is a critical step in understanding the underlying infrastructure and potential vulnerabilities of a target. While CDNs provide robust security and performance benefits, they also introduce challenges in directly accessing the server's IP. Through a combination of technical methods and tools, as well as social engineering tactics, penetration testers and threat actors alike can uncover this crucial information. It is essential to stay informed about these techniques to better protect and secure network environments against potential threats.
+
+TODO:
+
+2. find origin IP of `enji.ai`
+3. CloudRecon https://github.com/0xSpidey/cloudrecon add.
