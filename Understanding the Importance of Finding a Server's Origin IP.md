@@ -145,6 +145,21 @@ a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.30.79.226
 
 We can see that the subdomains `dev.enji.ai` and `auth.enji.ai` resolve to the CNAME record `a33...075.eu-west-1.elb.amazonaws.com`, which in turn resolves to the IP addresses `52.19.60.183` and `52.30.79.226`. By identifying such records, we can often bypass the CDN and uncover the real IP addresses of the servers hosting these subdomains.
 
+## CND IP ranges
+
+Given that Enji.AI is hosted on AWS, we can utilize Amazon's IP ranges to identify the IP address associated with our domain. This can be accomplished with the following command:
+
+> **How do i find IP ranges of different providers?** This particular `amazon-ipv4-sni.txt` dictionary was found on `kaeferjaeger.gay/sni-ip-ranges/amazon`. You can easily find one on the internet.
+
+```
+$ cat amazon-ipv4-sni.txt | grep enji.ai
+...
+52.209.176.32:443 -- [enji.ai *.comedian.maddevs.co *.staging.enji.ai *.enji.ai *.dev.enji.ai comedian.maddevs.co]
+...
+```
+
+In this instance, the identified IP address is now associated with a different domain, rendering it irrelevant for our current needs. However, this method remains highly valuable for uncovering the actual IP address of different domains in future engagements.
+
 ## Additional Methods
 
 Here are some additional techniques that can assist in uncovering the real IP address of the server:
@@ -195,6 +210,8 @@ $ curl -v https://34.247.206.200 -k
 ```
 
 Looking at the output, the tool stated that it didn't found an origin IP, but we found many other IP's that could be useful in our engagement.
+
+We can also find the IP adress in the IP ranges of different ??holders/cloud providers?? with help of `sni-ip-ranges`, doing it manually or using tool like CloudRecon:
 
 ## Other tools
 
