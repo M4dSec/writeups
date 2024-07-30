@@ -75,6 +75,7 @@ By using `curl` on that IP with custom `Host` header value, we observe that we h
 ```
 $ curl -v http://52.19.60.183/ -H 'Host: enji.ai
 ```
+Response:
 ```
 HTTP/1.1 301 Moved Permanently
 Content-Type: text/html
