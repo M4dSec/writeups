@@ -147,7 +147,7 @@ We can see that the subdomains `dev.enji.ai` and `auth.enji.ai` resolve to the C
 
 ## CND IP ranges
 
-Given that Enji.AI is hosted on AWS, we can utilize Amazon's IP ranges to identify the IP address associated with our domain. This can be accomplished with the following command:
+Given that Enji.AI is hosted on AWS, we can utilize CN/SANs of all Amazon's IPs to identify the IP address associated with our domain. This can be accomplished with the following command:
 
 > **How do i find IP ranges of different providers?** This particular `amazon-ipv4-sni.txt` dictionary was found on `kaeferjaeger.gay/sni-ip-ranges/amazon`. You can easily find one on the internet.
 
@@ -242,5 +242,6 @@ Identifying a server's origin IP is a critical step in understanding the underly
 
 TODO:
 
-2. find origin IP of `enji.ai`
-3. CloudRecon https://github.com/0xSpidey/cloudrecon add.
+2. find origin IP of `enji.ai` - `34.247.206.200`
+`https://en.fofa.info/result?qbase64=ZW5qaS5haQ%3D%3D`
+3. CloudRecon `https://github.com/0xSpidey/cloudrecon` add.
