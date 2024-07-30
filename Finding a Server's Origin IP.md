@@ -71,8 +71,10 @@ Forward DNS: elm-frontend.enji.ai, dev.enji.ai, airflow.enji.ai ...
 Names: *.comedian.maddevs.co, *.dev.enji.ai, *.enji.ai, *.staging.enji.ai, comedian.maddevs.co, enji.ai
 ```
 
-By accessing using `curl -v http://52.19.60.183/ -H 'Host: enji.ai'`, we observe that we have found the correct IP address:
-
+By using `curl` on that IP with custom `Host` header value, we observe that we have found the correct IP address:
+```
+$ curl -v http://52.19.60.183/ -H 'Host: enji.ai
+```
 ```
 HTTP/1.1 301 Moved Permanently
 Content-Type: text/html
