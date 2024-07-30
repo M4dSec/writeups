@@ -71,10 +71,20 @@ Forward DNS: elm-frontend.enji.ai, dev.enji.ai, airflow.enji.ai ...
 Names: *.comedian.maddevs.co, *.dev.enji.ai, *.enji.ai, *.staging.enji.ai, comedian.maddevs.co, enji.ai
 ```
 
-By accessing `http://52.19.60.183/`, we observe an interesting message that suggests we have found the correct IP address:
-![](./assets/found-adress.png)
+By accessing using `curl -v http://52.19.60.183/ -H 'Host: enji.ai'`, we observe that we have found the correct IP address:
 
-This method is one of the simplest and most efficient ways to identify the real IP address of a target. Keep in mind that the different IP addresses identified during our investigation are not necessarily the host IPs for `enji.ai`, but they provide valuable clues about the present subnet and expanding our attack surface.
+```
+HTTP/1.1 301 Moved Permanently
+Content-Type: text/html
+Location: https://enji.ai:443/
+
+<html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+```
+
+This method is one of the simplest and most efficient ways to identify the real IP address of a target. Keep in mind that the different IP addresses identified during our investigation won't necessarily be the host IPs for `enji.ai`, but they provide valuable clues about the present subnet and expanding our attack surface.
 
 ## Subdomains
 
@@ -104,7 +114,7 @@ $ host docs.enji.ai
 docs.enji.ai has address 52.30.219.62
 ```
 
-From the output above, we can see that `docs.enji.ai` is not routed through a CDN, which reveals the real IP address.
+From the output above, we can see that `docs.enji.ai` is not routed through a CDN, which reveals the `docs.enji.ai` real IP address.
 
 ## DNS Records Analysis
 
@@ -143,9 +153,9 @@ a33...075.eu-west-1.elb.amazonaws.com. 0 IN A 52.30.79.226
 ...
 ```
 
-We can see that the subdomains `dev.enji.ai` and `auth.enji.ai` resolve to the CNAME record `a33...075.eu-west-1.elb.amazonaws.com`, which in turn resolves to the IP addresses `52.19.60.183` and `52.30.79.226`. By identifying such records, we can often bypass the CDN and uncover the real IP addresses of the servers hosting these subdomains.
+We can see that the subdomains `dev.enji.ai` and `auth.enji.ai` resolve to the CNAME record `a33...075.eu-west-1.elb.amazonaws.com`, which in turn resolves to the IP addresses `52.19.60.183` (which is our real IP adress) and `52.30.79.226`. By identifying such records, we can often bypass the CDN and uncover the real IP addresses of the servers hosting these subdomains.
 
-## CND IP ranges
+## CDN IP ranges
 
 Given that Enji.AI is hosted on AWS, we can utilize CN/SANs of all Amazon's IPs to identify the IP address associated with our domain. This can be accomplished with the following command:
 
@@ -211,8 +221,6 @@ $ curl -v https://34.247.206.200 -k
 
 Looking at the output, the tool stated that it didn't found an origin IP, but we found many other IP's that could be useful in our engagement.
 
-We can also find the IP adress in the IP ranges of different ??holders/cloud providers?? with help of `sni-ip-ranges`, doing it manually or using tool like CloudRecon:
-
 ## Other tools
 
 Two of the most effective and widely-used tools for discovering IP addresses are Censys and Shodan. These powerful platforms comprehensively scan domains, gathering a wide array of data including HTTP headers, SSL certificates, services operating on various ports, and metadata analysis. By leveraging the extensive databases and sophisticated search capabilities of Censys and Shodan, we can uncover critical information about a target's infrastructure, identify potential vulnerabilities, and gain insights into the configuration and exposure of network services.
@@ -239,9 +247,3 @@ It's essential to understand the ethical and legal implications of these techniq
 # Conclusion
 
 Identifying a server's origin IP is a critical step in understanding the underlying infrastructure and potential vulnerabilities of a target. While CDNs provide robust security and performance benefits, they also introduce challenges in directly accessing the server's IP. Through a combination of technical methods and tools, as well as social engineering tactics, penetration testers and threat actors alike can uncover this crucial information. It is essential to stay informed about these techniques to better protect and secure network environments against potential threats.
-
-TODO:
-
-2. find origin IP of `enji.ai` - `34.247.206.200`
-`https://en.fofa.info/result?qbase64=ZW5qaS5haQ%3D%3D`
-3. CloudRecon `https://github.com/0xSpidey/cloudrecon` add.
